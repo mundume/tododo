@@ -5,7 +5,13 @@ import { GrAdd } from "react-icons/gr";
 function reducer(state, action) {
   switch (action.type) {
     case "ADD":
-      return [...state, newTodo(action.payload.name)];
+      return [newTodo(action.payload.name), ...state];
+    case "DELETE":
+      return state.filter((item) => {
+        if (item.id !== action.payload.id) {
+          return item;
+        }
+      });
   }
 }
 function newTodo(name) {
@@ -37,12 +43,16 @@ function App() {
   };
 
   useEffect(() => {
-    window.localStorage.setItem("todos", JSON.stringify(initialState));
-  }, [initialState]);
+    window.localStorage.setItem("todos", JSON.stringify(state));
+  }, [state]);
 
   const handleDelete = (id) => {
-    const deletedItem = todos.filter((item) => item.id !== id);
-    setTodos(deletedItem);
+    dispatch({
+      type: "DELETE",
+      payload: {
+        id: id,
+      },
+    });
   };
   function handleCompleted(id) {
     const k = todos.map((item) => {
