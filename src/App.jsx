@@ -12,6 +12,12 @@ function reducer(state, action) {
           return item;
         }
       });
+    case "SET_COMPLETE":
+      return state.map((item) => {
+        if (item.id === action.payload.id) {
+          return !item.completed;
+        }
+      });
   }
 }
 function newTodo(name) {
@@ -55,12 +61,14 @@ function App() {
     });
   };
   function handleCompleted(id) {
-    const k = todos.map((item) => {
-      if (item.id === id) {
-        console.log(!item.completed);
-      }
+    dispatch({
+      type: "SET_COMPLETE",
+      payload: {
+        id: id,
+      },
     });
   }
+
   return (
     <div className="h-full w-full">
       <div className="m-auto mt-20 block ">
@@ -83,18 +91,15 @@ function App() {
       <div className="m-5 flex flex-col items-center justify-center">
         {state.map((item) => (
           <div key={item.id} className="m-auto block">
-            <p
-              className={
-                item.completed
-                  ? "m-auto block text-yellow-400"
-                  : "m-auto block text-black"
-              }
-            >
-              {item.name}
-            </p>
+            <p className={"m-auto block text-black"}>{item.name}</p>
             <button
               className="rounded border-none bg-emerald-600 p-2 text-white outline-none"
-              onClick={() => handleCompleted(item.id)}
+              onClick={() =>
+                dispatch({
+                  type: "SET_COMPLETE",
+                  payload: item.id,
+                })
+              }
             >
               {" "}
               Mark done
