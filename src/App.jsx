@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { GrAdd } from "react-icons/gr";
-import { AiFillDelete } from "react-icons/ai";
 
 function App() {
   const [input, setInput] = useState("");
@@ -16,7 +15,7 @@ function App() {
     e.preventDefault();
     if (input !== "") {
       const newTodo = { id: Date.now(), name: input, completed: false };
-      setTodos([...todos, newTodo]);
+      setTodos([newTodo, ...todos]);
 
       setInput("");
     }
@@ -30,14 +29,14 @@ function App() {
     const del = todos.filter((item) => item.id !== id);
     setTodos(del);
   };
-  const handleCompleted = (id) => {
-    todos.map((item) => {
-      if (item.id === id) {
-        console.log(item.id);
-        setTodos([...todos, !item.completed]);
+  function handleCompleted(completed) {
+    todos.filter((item) => {
+      if (item.id === completed) {
+        return { ...item, completed: !item.completed };
       }
+      setTodos(todos);
     });
-  };
+  }
   return (
     <div className="h-full w-full">
       <div className="m-auto mt-20 block ">
@@ -57,13 +56,30 @@ function App() {
           />
         </div>
       </div>
-      <div className="flex flex-col items-center justify-center">
+      <div className="m-5 flex flex-col items-center justify-center">
         {todos.map((item) => (
-          <div key={item.id}>
-            <p className={item.completed ? "text-yellow-400" : "text-black"}>
+          <div key={item.id} className="m-auto block">
+            <p
+              className={
+                item.completed ? "text-yellow-400" : "m-auto block text-black"
+              }
+            >
               {item.name}
             </p>
-            <button onClick={handleCompleted}> done</button>
+            <button
+              className="rounded border-none bg-emerald-600 p-2 text-white outline-none"
+              onClick={() => handleCompleted(item.completed)}
+            >
+              {" "}
+              Mark done
+            </button>
+            <button
+              className="m-2 rounded border-none bg-red-600 p-2 text-white outline-none"
+              onClick={() => handleDelete(item.id)}
+            >
+              {" "}
+              delete task
+            </button>
           </div>
         ))}
       </div>
